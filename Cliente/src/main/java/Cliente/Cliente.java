@@ -14,12 +14,10 @@ public class Cliente {
         BufferedReader lector = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 
-        // Pedir usuario
         System.out.print("Ingrese usuario: ");
         String usuario = teclado.readLine();
         escritor.println(usuario);
 
-        // Pedir contraseña
         System.out.print("Ingrese contraseña: ");
         String contrasena = teclado.readLine();
         escritor.println(contrasena);
