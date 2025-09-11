@@ -11,6 +11,9 @@ import java.net.Socket;
 
 public class Servidor {
 
+    private static Set<String> usuariosConectados = ConcurrentHashMap.newKeySet();
+    private static Map<String, List<String>> mensajesPendientes = new ConcurrentHashMap<>();
+
     public static void main(String[] args) throws Exception {
  ServerSocket serverSocket = new ServerSocket(8080);
         System.out.println("Servidor escuchando en puerto 8080...");
