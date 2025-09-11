@@ -9,26 +9,30 @@ import java.net.Socket;
 public class Cliente {
 
     public static void main(String[] args) throws Exception {
-               Socket socket = new Socket("localhost", 8080);
+        Socket socket = new Socket("localhost", 8080);
         PrintWriter escritor = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader lector = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 
-        System.out.print("Ingrese usuario: ");
-        String usuario = teclado.readLine();
-        escritor.println(usuario);
+        Thread receptor = new Thread(() -> {
+            try {
+                String linea;
+                while ((linea = lector.readLine()) != null) {
+                    System.out.println(linea);
+                }
+            } catch (IOException e) {
+                System.out.println("Conexión cerrada.");
+            }
+        });
+        receptor.start();
 
-        System.out.print("Ingrese contraseña: ");
-        String contrasena = teclado.readLine();
-        escritor.println(contrasena);
-
-        // Leer respuesta del servidor
-        String respuesta = lector.readLine();
-        System.out.println(respuesta);
-
-        // Cerrar conexiones
-        escritor.close();
-        lector.close();
+        String texto;
+        while ((texto = teclado.readLine()) != null) {
+            escritor.println(texto);
+            if (texto.equalsIgnoreCase("SALIR")) {
+                break;
+            }
+        }
         socket.close();
     }
 }
