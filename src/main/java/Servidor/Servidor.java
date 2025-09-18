@@ -67,7 +67,17 @@ public class Servidor {
                 while ((linea = lector.readLine()) != null) {
                     if (linea.equalsIgnoreCase("SALIR")) {
                         break;
-                    }
+                      }
+                   if (linea.equalsIgnoreCase("BORRAR")) {
+                      if (mensajesPendientes.containsKey(usuario)) {
+                       mensajesPendientes.remove(usuario);
+                       escritor.println("🗑️ Todos tus mensajes fueron borrados.");
+                       guardarRegistro(usuario, "Borró sus mensajes");
+                        } else {
+                       escritor.println("No tienes mensajes para borrar.");
+                   }
+                     continue; 
+                   }
                     if (linea.contains(":")) {
                         String[] partes = linea.split(":", 2);
                         String destinatario = partes[0];
