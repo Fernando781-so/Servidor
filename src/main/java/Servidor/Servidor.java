@@ -62,7 +62,8 @@ public class Servidor {
                 } else {
                     escritor.println("No tienes mensajes nuevos.");
                 }
-
+                    mostrarComandos();
+                    
                 String linea;
                 while ((linea = lector.readLine()) != null) {
                     if (linea.equalsIgnoreCase("SALIR")) {
@@ -116,5 +117,14 @@ public class Servidor {
                 System.out.println("Error al guardar registro: " + e.getMessage());
             }
         }
+        private void mostrarComandos() {
+    escritor.println("===== COMANDOS DISPONIBLES =====");
+    escritor.println("1) Enviar mensaje: destinatario: mensaje");
+    escritor.println("   Ejemplo: ana: hola, ¿cómo estás?");
+    escritor.println("2) Borrar todos tus mensajes pendientes: BORRAR");
+    escritor.println("3) Mostrar esta ayuda en cualquier momento: AYUDA");
+    escritor.println("4) Cerrar sesión: SALIR");
+    escritor.println("===================================");
     }
+  }
 }
