@@ -20,13 +20,15 @@ public class Servidor {
     private static Map<String, List<String>> mensajesPendientes = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws Exception {
- ServerSocket serverSocket = new ServerSocket(8080);
-        System.out.println("Servidor escuchando en puerto 8080...");
+ try (ServerSocket serverSocket = new ServerSocket(8080)) 
+ {
+    System.out.println("Servidor escuchando en puerto 8080...");
 
-        while (true) {
-            Socket cliente = serverSocket.accept();
-            new Thread(new ManejadorCliente(cliente)).start();
-        }
+    while (true) {
+        Socket cliente = serverSocket.accept();
+        new Thread(new ManejadorCliente(cliente)).start();
+    }
+ }
     }
 
     static class ManejadorCliente implements Runnable {
