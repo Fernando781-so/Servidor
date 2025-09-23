@@ -1,4 +1,3 @@
-
 package cliente;
 
 import java.io.BufferedReader;
