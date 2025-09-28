@@ -22,6 +22,7 @@ public class Servidor {
     private static Set<String> usuariosConectados = ConcurrentHashMap.newKeySet();
     private static Map<String, List<String>> mensajesPendientes = new ConcurrentHashMap<>();
     private static Set<String> usuariosRegistrados = ConcurrentHashMap.newKeySet();
+    private static Map<String, Set<String>> usuariosBloqueados = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws Exception {
  try (ServerSocket serverSocket = new ServerSocket(8080)) 
@@ -137,13 +138,40 @@ public class Servidor {
                   }
                      continue;
                 }
+                    if (linea.startsWith("BLOQUEAR:")) {
+                        String objetivo = linea.split(":", 2)[1].trim();
+                      if (objetivo.equals(usuario)) {
+                            escritor.println("❌ No puedes bloquearte a ti mismo.");
+                        } else {
+                            usuariosBloqueados.putIfAbsent(usuario, ConcurrentHashMap.newKeySet());
+                            usuariosBloqueados.get(usuario).add(objetivo);
+                            escritor.println("🚫 Has bloqueado a " + objetivo);
+                            guardarRegistro(usuario, "Bloqueó a " + objetivo);
+                        }
+                        continue;
+                    }
+                       if (linea.startsWith("DESBLOQUEAR:")) {
+                        String objetivo = linea.split(":", 2)[1].trim();
+                    if (usuariosBloqueados.containsKey(usuario) && usuariosBloqueados.get(usuario).remove(objetivo)) {
+                        escritor.println("✅ Has desbloqueado a " + objetivo);
+                        guardarRegistro(usuario, "Desbloqueó a " + objetivo);
+                  } else {
+                        escritor.println("❌ " + objetivo + " no estaba bloqueado.");
+                  }
+                     continue;
+                }
                     if (linea.contains(":")) {
                         String[] partes = linea.split(":", 2);
                         String destinatario = partes[0];
                         String mensaje = partes.length > 1 ? partes[1].trim() : "";
-
                         String completo = usuario + " dice: " + mensaje;
 
+                    if (usuariosBloqueados.containsKey(destinatario) &&
+                        usuariosBloqueados.get(destinatario).contains(usuario)) {
+                        escritor.println("❌ No puedes enviar mensajes a " + destinatario + " (te ha bloqueado).");
+                        guardarRegistro(usuario, "Intentó enviar mensaje a " + destinatario + " pero estaba bloqueado.");
+                        continue;
+                    }
                         mensajesPendientes.putIfAbsent(destinatario, new ArrayList<>());
                         mensajesPendientes.get(destinatario).add(completo);
 
@@ -203,8 +231,10 @@ public class Servidor {
             escritor.println("   Ejemplo: LISTAR:ana");
             escritor.println("5) Descargar archivo de otro usuario: DESCARGAR:usuario:archivo.txt");
             escritor.println("   También aceptado: DESCARGAR usuario archivo.txt");
-            escritor.println("6) Ver usuarios conectados y no conectados: USUARIOS");
-            escritor.println("7) Cerrar sesión: SALIR");
+            escritor.println("6) Bloquear mensajes de un usuario: BLOQUEAR:usuario");
+            escritor.println("7) Desbloquear usuario: DESBLOQUEAR:usuario");
+            escritor.println("8) Ver usuarios conectados y no conectados: USUARIOS");
+            escritor.println("9) Cerrar sesión: SALIR");
             escritor.println("====================================");
     }
   }
