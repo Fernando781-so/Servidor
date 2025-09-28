@@ -1,0 +1,7 @@
+Usuario: Juan | Acción: Conectado | Fecha/Hora: 2025-09-28T14:29:08.626801600
+Usuario: Juan | Acción: Mensaje a Cesar:  hola | Fecha/Hora: 2025-09-28T14:29:38.138556500
+Usuario: Juan | Acción: Desconectado | Fecha/Hora: 2025-09-28T14:29:52.109258500
+Usuario: Cesar | Acción: Conectado | Fecha/Hora: 2025-09-28T14:30:16.362449900
+Usuario: Cesar | Acción: Desconectado | Fecha/Hora: 2025-09-28T14:30:27.102494400
+Usuario: Cesar | Acción: Conectado | Fecha/Hora: 2025-09-28T14:48:55.980404100
+Usuario: Cesar | Acción: Desconectado | Fecha/Hora: 2025-09-28T14:50:59.452384200
