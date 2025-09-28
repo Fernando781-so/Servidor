@@ -2,6 +2,7 @@ package Servidor;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -72,14 +73,25 @@ public class Servidor {
                     escritor.println("No tienes mensajes nuevos.");
                 }
                     mostrarComandos();
-                    
+                 
                 String linea;
                 while ((linea = lector.readLine()) != null) {
                     if (linea.equalsIgnoreCase("SALIR")) {
                         break;
                       }
+                    if (linea.equalsIgnoreCase("AYUDA")) {
+                        mostrarComandos();
+                        continue;
+                    }
+                     if (linea.equalsIgnoreCase("USUARIOS")) {
+                        escritor.println("👥 Usuarios conectados: " + usuariosConectados);
+                        java.util.Set<String> noConectados = new java.util.HashSet<>(usuariosRegistrados);
+                        noConectados.removeAll(usuariosConectados);
+                        escritor.println("🔒 Usuarios no conectados (registrados): " + noConectados);
+                        continue;
+                    }
                    if (linea.equalsIgnoreCase("BORRAR")) {
-                   if (mensajesPendientes.containsKey(usuario)) {
+                     if (mensajesPendientes.containsKey(usuario)) {
                        mensajesPendientes.remove(usuario);
                        escritor.println("🗑️ Todos tus mensajes fueron borrados.");
                        guardarRegistro(usuario, "Borró sus mensajes");
@@ -88,7 +100,21 @@ public class Servidor {
                    }
                      continue; 
                    }
-                   if (linea.startsWith("DESCARGAR:")) {
+                   if (linea.equalsIgnoreCase("LISTAR") || linea.equalsIgnoreCase("LISTA")) {
+                        listarArchivosDe(usuario);
+                        continue;
+                    }
+                    if (linea.toUpperCase().startsWith("LISTAR:") || linea.toUpperCase().startsWith("LISTA:")) {
+                        String[] p = linea.split(":", 2);
+                        String objetivo = (p.length > 1) ? p[1].trim() : "";
+                    if (objetivo.isEmpty()) {
+                            escritor.println("❌ Uso: LISTAR:usuario  (o 'LISTAR' para ver tus archivos)");
+                        } else {
+                            listarArchivosDe(objetivo);
+                        }
+                        continue;
+                    }
+                   if (linea.startsWith("DESCARGAR")) {
                         String[] partes = linea.split(":", 3);
                    if (partes.length < 3) {
                        escritor.println("❌ Uso: DESCARGAR:usuario:archivo.txt");
@@ -111,28 +137,10 @@ public class Servidor {
                   }
                      continue;
                 }
-                   if (linea.startsWith("LISTAR:")) {
-                       String objetivo = linea.split(":", 2)[1];
-                       java.io.File carpeta = new java.io.File("carpeta_" + objetivo);
-                    if (!carpeta.exists()) {
-                        escritor.println("❌ No existe directorio para " + objetivo);
-                    } else {
-                       String[] archivos = carpeta.list((_, name) -> name.endsWith(".txt"));
-                    if (archivos != null && archivos.length > 0) {
-                      escritor.println("📂 Archivos de " + objetivo + ":");
-                    for (String archivo : archivos) {
-                      escritor.println("   - " + archivo);
-                    }
-                  } else {
-                    escritor.println("📂 " + objetivo + " no tiene archivos .txt");
-                      }
-                   }
-                       continue;
-                    }
                     if (linea.contains(":")) {
                         String[] partes = linea.split(":", 2);
                         String destinatario = partes[0];
-                        String mensaje = partes[1];
+                        String mensaje = partes.length > 1 ? partes[1].trim() : "";
 
                         String completo = usuario + " dice: " + mensaje;
 
@@ -142,7 +150,7 @@ public class Servidor {
                         escritor.println("✅ Mensaje enviado a " + destinatario);
                         guardarRegistro(usuario, "Mensaje a " + destinatario + ": " + mensaje);
                     } else {
-                        escritor.println("Formato inválido. Usa destinatario:mensaje");
+                        escritor.println("Formato invalido. Usa 'destinatario: mensaje' o escribe AYUDA para ver comandos.");
                     }                    
                 }
                 usuariosConectados.remove(usuario);
@@ -154,7 +162,25 @@ public class Servidor {
                 System.out.println("Error con el cliente: " + e.getMessage());
             }
         }
-        private void guardarRegistro(String usuario, String accion) {
+
+         private void listarArchivosDe(String objetivo) {
+            File carpeta = new File("carpeta_" + objetivo);
+            if (!carpeta.exists()) {
+                escritor.println("❌ No existe directorio para " + objetivo);
+                return;
+            }
+            String[] archivos = carpeta.list((dir, name) -> name.toLowerCase().endsWith(".txt"));
+            if (archivos != null && archivos.length > 0) {
+                escritor.println("📂 Archivos de " + objetivo + ":");
+                for (String archivo : archivos) {
+                    escritor.println("   - " + archivo);
+                }
+            } else {
+                escritor.println("📂 " + objetivo + " no tiene archivos .txt");
+            }
+        }
+
+         private void guardarRegistro(String usuario, String accion) {
             try (FileWriter fw = new FileWriter("registros.txt", true);
                  BufferedWriter bw = new BufferedWriter(fw);
                  PrintWriter out = new PrintWriter(bw)) {
@@ -167,13 +193,19 @@ public class Servidor {
             }
         }
         private void mostrarComandos() {
-    escritor.println("===== COMANDOS DISPONIBLES =====");
-    escritor.println("1) Enviar mensaje: destinatario: mensaje");
-    escritor.println("   Ejemplo: ana: hola, ¿cómo estás?");
-    escritor.println("2) Borrar todos tus mensajes pendientes: BORRAR");
-    escritor.println("3) Mostrar esta ayuda en cualquier momento: AYUDA");
-    escritor.println("4) Cerrar sesión: SALIR");
-    escritor.println("====================================");
+              escritor.println("===== COMANDOS DISPONIBLES =====");
+            escritor.println("1) Enviar mensaje: destinatario: mensaje");
+            escritor.println("   Ejemplo: ana: hola, ¿cómo estás?");
+            escritor.println("2) Borrar todos tus mensajes pendientes: BORRAR");
+            escritor.println("3) Mostrar esta ayuda en cualquier momento: AYUDA");
+            escritor.println("4) Listar tus archivos .txt (en servidor): LISTAR  (o LISTA)");
+            escritor.println(". Listar archivos de otro usuario: LISTAR:usuario");
+            escritor.println("   Ejemplo: LISTAR:ana");
+            escritor.println("5) Descargar archivo de otro usuario: DESCARGAR:usuario:archivo.txt");
+            escritor.println("   También aceptado: DESCARGAR usuario archivo.txt");
+            escritor.println("6) Ver usuarios conectados y no conectados: USUARIOS");
+            escritor.println("7) Cerrar sesión: SALIR");
+            escritor.println("====================================");
     }
   }
 }

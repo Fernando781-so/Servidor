@@ -5,3 +5,6 @@ Usuario: Cesar | Acción: Conectado | Fecha/Hora: 2025-09-28T14:30:16.362449900
 Usuario: Cesar | Acción: Desconectado | Fecha/Hora: 2025-09-28T14:30:27.102494400
 Usuario: Cesar | Acción: Conectado | Fecha/Hora: 2025-09-28T14:48:55.980404100
 Usuario: Cesar | Acción: Desconectado | Fecha/Hora: 2025-09-28T14:50:59.452384200
+Usuario: cesar | Acción: Conectado | Fecha/Hora: 2025-09-28T15:00:55.538967
+Usuario: cesar | Acción: Mensaje a listar:  | Fecha/Hora: 2025-09-28T15:01:12.353217200
+Usuario: cesar | Acción: Desconectado | Fecha/Hora: 2025-09-28T15:01:55.906918600
