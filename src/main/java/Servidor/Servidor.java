@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ public class Servidor {
 
     private static Set<String> usuariosConectados = ConcurrentHashMap.newKeySet();
     private static Map<String, List<String>> mensajesPendientes = new ConcurrentHashMap<>();
+    private static Set<String> usuariosRegistrados = ConcurrentHashMap.newKeySet();
 
     public static void main(String[] args) throws Exception {
  try (ServerSocket serverSocket = new ServerSocket(8080)) 
@@ -49,6 +52,10 @@ public class Servidor {
 
                 escritor.println("Ingrese su usuario:");
                 usuario = lector.readLine();
+
+               Files.createDirectories(Paths.get("carpeta_" + usuario));
+
+               usuariosRegistrados.add(usuario);
 
                 usuariosConectados.add(usuario);
                 guardarRegistro(usuario, "Conectado");
