@@ -126,7 +126,7 @@ public class Servidor {
     escritor.println("2) Borrar todos tus mensajes pendientes: BORRAR");
     escritor.println("3) Mostrar esta ayuda en cualquier momento: AYUDA");
     escritor.println("4) Cerrar sesión: SALIR");
-    escritor.println("===================================");
+    escritor.println("====================================");
     }
   }
 }
