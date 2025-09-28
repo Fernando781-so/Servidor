@@ -8,3 +8,11 @@ Usuario: Cesar | Acción: Desconectado | Fecha/Hora: 2025-09-28T14:50:59.4523842
 Usuario: cesar | Acción: Conectado | Fecha/Hora: 2025-09-28T15:00:55.538967
 Usuario: cesar | Acción: Mensaje a listar:  | Fecha/Hora: 2025-09-28T15:01:12.353217200
 Usuario: cesar | Acción: Desconectado | Fecha/Hora: 2025-09-28T15:01:55.906918600
+Usuario: Cesar | Acción: Conectado | Fecha/Hora: 2025-09-28T16:42:15.013973200
+Usuario: Cesar | Acción: Mensaje a Juan: hola | Fecha/Hora: 2025-09-28T16:42:39.178507800
+Usuario: Cesar | Acción: Mensaje a Bloquear: Juan | Fecha/Hora: 2025-09-28T16:43:42.223720500
+Usuario: Cesar | Acción: Mensaje a Bloquear: Juan | Fecha/Hora: 2025-09-28T16:43:59.091849600
+Usuario: Cesar | Acción: Desconectado | Fecha/Hora: 2025-09-28T16:44:10.592979300
+Usuario: Cesar | Acción: Conectado | Fecha/Hora: 2025-09-28T16:46:07.676844400
+Usuario: Cesar | Acción: Bloqueó a Juan | Fecha/Hora: 2025-09-28T16:46:28.735690700
+Usuario: Cesar | Acción: Desbloqueó a Juan | Fecha/Hora: 2025-09-28T16:46:39.850991900

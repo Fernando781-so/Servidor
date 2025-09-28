@@ -197,7 +197,7 @@ public class Servidor {
                 escritor.println("❌ No existe directorio para " + objetivo);
                 return;
             }
-            String[] archivos = carpeta.list((dir, name) -> name.toLowerCase().endsWith(".txt"));
+            String[] archivos = carpeta.list((_, name) -> name.toLowerCase().endsWith(".txt"));
             if (archivos != null && archivos.length > 0) {
                 escritor.println("📂 Archivos de " + objetivo + ":");
                 for (String archivo : archivos) {
