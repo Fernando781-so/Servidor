@@ -1,6 +1,7 @@
 package cliente;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -17,8 +18,31 @@ public class Cliente {
         Thread receptor = new Thread(() -> {
             try {
                 String linea;
+                boolean recibiendoArchivo = false;
+                PrintWriter archivoActual = null;
+
                 while ((linea = lector.readLine()) != null) {
-                    System.out.println(linea);
+                    if (linea.startsWith("📥 INICIO_ARCHIVO")) {
+                        String nombreArchivo = linea.split(" ", 2)[1];
+                        archivoActual = new PrintWriter(new FileWriter(nombreArchivo));
+                        recibiendoArchivo = true;
+                        System.out.println("Descargando archivo: " + nombreArchivo);
+                        continue;
+                    }
+                    if (linea.startsWith("📥 FIN_ARCHIVO")) {
+                        if (archivoActual != null) {
+                            archivoActual.close();
+                            archivoActual = null;
+                        }
+                        recibiendoArchivo = false;
+                        System.out.println("✅ Archivo descargado con éxito.");
+                        continue;
+                    }
+                    if (recibiendoArchivo && archivoActual != null) {
+                        archivoActual.println(linea);
+                    } else {
+                        System.out.println(linea);
+                    }
                 }
             } catch (IOException e) {
                 System.out.println("Conexión cerrada.");
