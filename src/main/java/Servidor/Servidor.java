@@ -72,7 +72,7 @@ public class Servidor {
                         break;
                       }
                    if (linea.equalsIgnoreCase("BORRAR")) {
-                      if (mensajesPendientes.containsKey(usuario)) {
+                   if (mensajesPendientes.containsKey(usuario)) {
                        mensajesPendientes.remove(usuario);
                        escritor.println("🗑️ Todos tus mensajes fueron borrados.");
                        guardarRegistro(usuario, "Borró sus mensajes");
@@ -81,6 +81,47 @@ public class Servidor {
                    }
                      continue; 
                    }
+                   if (linea.startsWith("DESCARGAR:")) {
+                        String[] partes = linea.split(":", 3);
+                   if (partes.length < 3) {
+                       escritor.println("❌ Uso: DESCARGAR:usuario:archivo.txt");
+                     continue;
+                   }
+                        String objetivo = partes[1];
+                        String archivo = partes[2];
+                      java.io.File file = new java.io.File("carpeta_" + objetivo + "/" + archivo);
+                  if (!file.exists()) {
+                        escritor.println("❌ El archivo no existe.");
+                      } else {
+                       escritor.println("📥 INICIO_ARCHIVO " + archivo);
+                  try (BufferedReader fr = new BufferedReader(new java.io.FileReader(file))) {
+                      String lineaArchivo;
+                  while ((lineaArchivo = fr.readLine()) != null) {
+                      escritor.println(lineaArchivo);
+                  }
+                   }
+                       escritor.println("📥 FIN_ARCHIVO " + archivo);
+                  }
+                     continue;
+                }
+                   if (linea.startsWith("LISTAR:")) {
+                       String objetivo = linea.split(":", 2)[1];
+                       java.io.File carpeta = new java.io.File("carpeta_" + objetivo);
+                    if (!carpeta.exists()) {
+                        escritor.println("❌ No existe directorio para " + objetivo);
+                    } else {
+                       String[] archivos = carpeta.list((_, name) -> name.endsWith(".txt"));
+                    if (archivos != null && archivos.length > 0) {
+                      escritor.println("📂 Archivos de " + objetivo + ":");
+                    for (String archivo : archivos) {
+                      escritor.println("   - " + archivo);
+                    }
+                  } else {
+                    escritor.println("📂 " + objetivo + " no tiene archivos .txt");
+                      }
+                   }
+                       continue;
+                    }
                     if (linea.contains(":")) {
                         String[] partes = linea.split(":", 2);
                         String destinatario = partes[0];
@@ -95,9 +136,8 @@ public class Servidor {
                         guardarRegistro(usuario, "Mensaje a " + destinatario + ": " + mensaje);
                     } else {
                         escritor.println("Formato inválido. Usa destinatario:mensaje");
-                    }
+                    }                    
                 }
-
                 usuariosConectados.remove(usuario);
                 guardarRegistro(usuario, "Desconectado");
                 escritor.println("Sesión cerrada. Adiós " + usuario);
